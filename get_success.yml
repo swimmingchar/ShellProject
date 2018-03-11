@@ -1,0 +1,31 @@
+---
+- hosts: all
+  tasks:
+  - name: count success
+    copy:
+      src: "{{ item.src }}"
+      dest: "{{ item.dest }}"
+      owner: tomcat
+      group: tomcat
+      mode: 0755
+    with_items:
+       - { src: "/opt/check_app/scripts/get_access_success.sh", dest: "/tmp/get_access_success.sh" }
+
+  - name: run scripts
+    shell: /tmp/get_access_success.sh
+    register: num
+    command: echo num.stdout_lines
+
+
+
+
+
+
+
+echo `grep `date  -d '1 minute ago' +%H:%M` /home/tomcat/app/logs/access.log| grep "成功" | wc -l`
+
+/u01/CMSS_WORKDIR/etc/HostGroups/Slave/basecmm-riskfront-core
+/u01/CMSS_WORKDIR/etc/HostGroups/Master/basecmm-riskfront-core
+
+---
+- hosts：

@@ -1,0 +1,18 @@
+---
+- hosts: IP
+  tasks:
+  - name: 获取文件名
+    shell: grep -r ':26379;' /home/tomcat/app/webapps/ |grep properties |grep -v ':#' |grep -v redis-config.properties | awk -F":" {'print $1'}
+    register: reg_file
+#  - name: 删除多余的空格
+    shell: grep -r ':26379;' /home/tomcat/app/webapps/ |grep properties |grep -v ':#' |grep -v redis-config.properties | awk -F":" {'print $1'} | sed -i 's/\r//g'
+  - name: 替换内容
+    lineinfile:
+      dest: "{{ item.path }}"
+      regexp: "^{{ item.regexp }}"
+      line: "{{ item.line }}"
+    with_items:
+      - { path: '{{ reg_file.stdout }}', regexp: '^redis.pool.masterName=master', line: 'redis.pool.masterName=masters' }
+      - { path: '{{ reg_file.stdout }}', regexp: '^redis.pool.sentinels=IP:PORT;IP:PORT;IP:PORT;IP:PORT', line: 'redis.pool.sentinels=IP:PORT;IP:PORT;IP:PORT' }
+      - { path: '{{ reg_file.stdout }}', regexp: '^redis.pool.password={passwd}', line: 'redis.pool.password={passwd}'}
+  -name: 重启tomcat
