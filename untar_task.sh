@@ -2,6 +2,10 @@
 #放在定时内，通过定时触发
 #version:0.1
 #Time:2018/2/7
+<<<<<<< HEAD
+=======
+#最终使用版本，Del文件功能有问题，可以生成文件，单是删除有问题。
+>>>>>>> 更新解压脚本说明。
 export LANG=en_US.utf-8
 log_path="/var/tmp/script"
 
