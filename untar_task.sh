@@ -1,18 +1,18 @@
 #!/bin/bash
 #放在定时内，通过定时触发
-#version:0.1
-#Time:2018/2/7
-<<<<<<< HEAD
-=======
+#version:1.1
+#Time:2018/3/15
 #最终使用版本，Del文件功能有问题，可以生成文件，单是删除有问题。
->>>>>>> 更新解压脚本说明。
 export LANG=en_US.utf-8
 log_path="/var/tmp/script"
 
 untar_main(){
 	untar_list_path="/home/tomcat/Upload"
 	unzip_path="/opt/catlogs/all"
-	tar_path="/backup/logbak"
+	#tar_path="/backup/logbak"
+	tar_path="/backup/typeback"
+	tar_path_year=`date +%Y`
+	tar_path_month=`date +%m`
 	#日志存留时间
 	del_date=`date -d '7 days ago' +%Y%m%d`
 	del_date_d=`date -d '7 days ago' +%d`
@@ -57,8 +57,7 @@ untar_main(){
 			untar_app_sign=`echo ${line}| awk -F: {'print $17'}`
 			untar_app_name=`echo ${line}| awk -F: {'print $4'}`
 			untar_app_ip=`echo ${line}| awk -F: {'print $5'}|awk -F. {'print $3"."$4'}`
-			untar_data=`echo ${untar_time}|cut -c 1-6`
-			untar_full_path=${tar_path}/${untar_app_name}/${untar_app_ip}/${untar_data}/${untar_app_name}_${untar_time}.tar.gz
+			untar_full_path=${tar_path}/${tar_path_year}/${tar_path_month}/${untar_app_name}/${untar_app_ip}/${untar_app_name}_${untar_time}.tar.gz
 
 			echo -e ${line}"行解析开始！\n\n"
 
@@ -83,7 +82,7 @@ untar_main(){
 							del_file_name=${unzip_path}/${untar_app_name}/${untar_app_ip}/${del_line}
 							[ -f ${del_file_name} ] && echo -e ${del_file_name} |tee -a ${del_list}
 						done < ${file_tmp}
-					fi					
+					fi
 				else
 					echo ${untar_full_path}" is not in! at "`date +%H:%M:%S`!\n
 				fi
