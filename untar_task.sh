@@ -98,8 +98,9 @@ untar_main(){
 		[ $? ] && echo -e "\n文件":${untar_list_path}/${untar_file}" 已备份!"
 	done
 
-	# 删除文件
-	test -f ${del_list_all} && echo -e "\n 删除列表已生成！" && exit 0
+	# 删除文件，每次生产当天日期文件的删除汇总文件
+	# test -f ${del_list_all} && echo -e "\n 删除列表已生成！" && exit 0
+	test -f ${del_list_all} && echo /dev/null > ${del_list_all} && echo -n "清空删除列表！AT："`date +%F-%T`
 	# 没有删除列表时执行
 	del_all_day_file_list=`find ${log_path}/logs -name "del_${del_date}*.list" `
 
@@ -108,6 +109,9 @@ untar_main(){
 		for i in ${del_all_day_file_list}; do
 			cat $i >> ${del_list_all}
 		done
+
+		#过滤重复数据，生产新删除文件列表
+		cat ${del_list_all} |sort |uniq > ${log_path}/logs/all_del_`date +%Y%m%d`.list
 
 		while read del_filename ; do
 			test -f ${del_filename} && rm ${del_filename} && echo -e "rm "${del_filename}"\n"${del_filename}" delete success! at `date +%H:%M:%S`\n" || echo -e ${del_filename}" delete fail! at `date +%H:%M:%S`\n">>${err_list}
